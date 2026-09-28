@@ -11,8 +11,8 @@ Project phát hiện lỗ hổng bảo mật trong mã nguồn sử dụng **Cod
 ## 2. Clone repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd <PROJECT_FOLDER>
+git clone https://github.com/Flareons/titans_pytorch.git
+cd Embedding
 ```
 
 ## 3. Tạo Virtual Environment
