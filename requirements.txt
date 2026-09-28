@@ -1,6 +1,5 @@
 pandas==2.2.2
 transformers==4.52.4
-torch==2.6.0+cu126
-torchvision==0.21.0+cu126
-torchaudio==2.6.0+cu126
+torch==2.14.0+cu126
 scikit-learn==1.8.0
+titans-pytorch

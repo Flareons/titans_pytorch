@@ -11,8 +11,7 @@ from tqdm import tqdm
 from dataloader.dataclass import FFMP_QUEMU
 from model.TITANS_Core_MAC import Core
 from model.Attention_Pooling import AttentionPooling, WindowAttentionPooling
-
-from titans_torch import TitansMAC, NeuralLongTermMemory
+from titans_pytorch import NeuralMemory
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -35,7 +34,9 @@ class TITANS_model(nn.Module):
         super().__init__()
         self.in_prj = nn.Linear(dim_in, dim) 
         # self.titans_cores = nn.ModuleList([Core(dim=dim) for _ in range(n_blocks)])
-        self.titans_cores = nn.ModuleList([TitansMAC(input_dim=dim, num_heads=4) for _ in range(n_blocks)])
+        # self.titans_cores = nn.ModuleList([TitansMAC(input_dim=dim, num_heads=4) for _ in range(n_blocks)])
+        self.titans_cores = nn.ModuleList([NeuralMemory(dim=dim, chunk_size=64) for _ in range(n_blocks)])
+        
         self.classifier = nn.Sequential(
             nn.Linear(dim, dim//2),
             nn.SiLU(),
@@ -48,26 +49,32 @@ class TITANS_model(nn.Module):
 
     def forward(self, x):
         x = self.in_prj(x)
-        print("Shape before Pooling:", x.shape)
-        x = self.attn_pooling(x).unsqueeze(0)  # Add batch dimension
+        # print("Shape before Pooling:", x.shape)
+        # x = self.attn_pooling(x).unsqueeze(0)  # Add batch dimension
 
-        # memory_states = []
+        # mem_states = []
         # loss_mem = []
         print("Shape before TITANS:", x.shape)
         for block in self.titans_cores:
 
-            x = block(x)
+            x, _ = block(x)
+            # mem_states.append(memory_states)
 
             # loss_mem.append(loss)
             # memory_states.append(memory_state)
 
         # loss_mem = torch.stack(loss_mem).mean()
-
+        # print("Shape after TITANS:", x.shape)
         # Pool sequence dimension rồi đưa qua classifier đa lớp
-        x = x.squeeze(0)  # Remove batch dimension for window pooling
+        # x = x.squeeze(0)  # Remove batch dimension for window pooling
+        x = self.attn_pooling(x)
+        # print("Shape after Pooling:", x.shape)
+        # x = x.unsqueeze(0)  # Add batch dimension back for classifier
         x = self.window_pooling(x)
-        x = x.unsqueeze(0)  # Add batch dimension back for classifier
+        # print("Shape after Pooling:", x.shape)
+        x = x.unsqueeze(0)
         logits = self.classifier(x)
+        # print("Shape logits:", x.shape)
 
         return logits
 
@@ -197,6 +204,7 @@ for epoch in range(10):
             # GPU cache cleanup
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
+            
         del outputs
         del mapping_count
         
