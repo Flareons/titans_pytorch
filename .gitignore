@@ -4,4 +4,5 @@ __pycache__/
 venv/
 env/
 
-tok_data/
+tok_data/test_tok
+tok_data/train_tok
