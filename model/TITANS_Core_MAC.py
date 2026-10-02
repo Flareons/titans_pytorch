@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from model.Neural_Memory import NeuralMemory
+# from model.Neural_Memory import NeuralMemory
+from titans_pytorch import NeuralMemory
 from model.Persistent_Memory import PersistentMemory
 from model.Cross_Attention import CrossMultiHeadAttention
 
@@ -21,7 +22,7 @@ class Core(nn.Module):
         
     def forward(self, x):
         
-        retrieval = self.neural_mem.read(x)
+        retrieval = self.neural_mem.retrieve_memories(x)
 
         B = x.shape[0]
 
@@ -43,7 +44,7 @@ class Core(nn.Module):
 
         out, attn = self.cross_attn(Q_attn, K_attn, V_attn)
 
-        loss_mem = self.neural_mem.memory_loss(out)
+        loss_mem = self.neural_mem(out)
 
         neural_out = self.neural_mem.read(out)
 

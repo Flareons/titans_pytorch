@@ -10,6 +10,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from dataloader.dataclass import FFMP_QUEMU
 from model.TITANS_Core_MAC import Core
+from titans_pytorch import MemoryAsContextTransformer
 from model.Attention_Pooling import AttentionPooling, WindowAttentionPooling
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -45,7 +46,7 @@ class TITANS_model(nn.Module):
 
     def forward(self, x):
         x = self.in_prj(x)
-        x = self.attn_pooling(x).unsqueeze(0)  # Add batch dimension
+        # x = self.attn_pooling(x).unsqueeze(0)  # Add batch dimension
 
         memory_states = []
         loss_mem = []

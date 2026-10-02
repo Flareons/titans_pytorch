@@ -4,5 +4,8 @@ __pycache__/
 venv/
 env/
 
-tok_data/test_tok
-tok_data/train_tok
+tok_data/test_tok/*
+tok_data/train_tok/*
+
+!tok_data/test_tok/.gitkeep
+!tok_data/train_tok/.gitkeep
