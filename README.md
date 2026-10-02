@@ -18,7 +18,11 @@ conda env create -f enc.yml
 ```bash
 conda activate vulnerability-ai
 ```
+**GỠ CÀI ĐẶT PHIÊN BẢN TORCH HIỆN TẠI**
 
+```bash
+pip uninstall torch
+```
 **CÀI ĐẶT PYTORCH DO PHIÊN BẢN MỚI CHỈ CÓ THỂ CÀI QUA URL**
 
 ```bash
